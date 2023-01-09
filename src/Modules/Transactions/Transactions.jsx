@@ -52,13 +52,44 @@ function createData(name, calories, fat, carbs, protein, price) {
 function Row(props) {
 	const { row, handleUpdateOrder } = props;
 	const [open, setOpen] = useState(false);
+
     const updateOrder = (orderStatus) => {
         if(row.orderStatus === 3){
             return;
         }
-
         handleUpdateOrder({orderId: row.id, orderStatus});
     }
+
+    const handleDisabledButton = (orderStatus) => {
+        if(orderStatus === 1){
+            return true;
+        }
+        if(orderStatus === 2){
+            return true;
+        }
+    }
+
+    const handleCancelDisabledButton = (orderStatus) => {
+        if(orderStatus === 0 || orderStatus === 1){
+            return false;
+        }
+        return true;
+    }
+
+    const handleShippedDisabledButton = (orderStatus) => {
+        if(orderStatus === 1 || orderStatus === 3 || orderStatus === 2){
+            return true;
+        }
+        return false;
+    }
+
+    const handledDeliveredDisabledButton = (orderStatus) => {
+        if(orderStatus === 1){
+            return false;
+        }
+        return true;
+    }
+
 	return (
 		<React.Fragment>
 			<TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -91,13 +122,13 @@ function Row(props) {
 					/>
 				</TableCell>
 				<TableCell align="right" style={{ display: "flex", gap: "5px" }}>
-					<Button variant="contained" size="small" color="error" onClick={() => updateOrder(3)} disabled={row.orderStatus === 3 ? true : false}>
+					<Button variant="contained" size="small" color="error" onClick={() => updateOrder(3)} disabled={handleCancelDisabledButton(row.orderStatus)}>
 						Cancel
 					</Button>
-					<Button variant="contained" size="small" onClick={() => updateOrder(1)} disabled={row.orderStatus === 3 ? true : false}>
+					<Button variant="contained" size="small" onClick={() => updateOrder(1)} disabled={handleShippedDisabledButton(row.orderStatus)}>
 						Shipped
 					</Button>
-					<Button variant="contained" size="small" onClick={() => updateOrder(2)}>
+					<Button variant="contained" size="small" onClick={() => updateOrder(2)} disabled={handledDeliveredDisabledButton(row.orderStatus)}>
 						Delivered
 					</Button>
 				</TableCell>

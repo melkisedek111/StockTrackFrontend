@@ -35,6 +35,7 @@ export const orderApi = createApi({
 				method: "POST",
 				body: payload,
 			}),
+			invalidatesTags : ["Order"],
 			async onQueryStarted(id, { dispatch, queryFulfilled }) {},
 		}),
 	}),
