@@ -158,7 +158,7 @@ function Navbar() {
 							{pages.map((page) => {
 								return !page.isRestricted ||
 									currentCustomer?.customer?.user_id ? (
-									<Link to={page.link} style={{textDecoration: "none"}}>
+									<Link to={page.link} style={{ textDecoration: "none" }}>
 										<Button
 											key={page.label}
 											onClick={handleCloseNavMenu}
@@ -169,6 +169,16 @@ function Navbar() {
 									</Link>
 								) : null;
 							})}
+							{currentCustomer?.customer?.role === 0 ? (
+								<Link to="/admin/inventory" style={{ textDecoration: "none" }}>
+									<Button
+										onClick={handleCloseNavMenu}
+										sx={{ my: 2, color: "white", display: "block" }}
+									>
+										Admin
+									</Button>
+								</Link>
+							) : null}
 						</Box>
 						{currentCustomer.customer?.user_id ? (
 							<Box sx={{ flexGrow: 0 }}>

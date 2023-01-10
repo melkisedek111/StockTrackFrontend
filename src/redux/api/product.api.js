@@ -26,8 +26,17 @@ export const productApi = createApi({
 				method: "POST"
 			}),
 			providesTags: ['Product'],
-		})
+		}),
+		addQuantity: builder.mutation({
+			query: (payload) => ({
+				url: "Product/addQuantity",
+				method: "POST",
+				body: payload,
+			}),
+			invalidatesTags : ["Product"],
+			async onQueryStarted(id, { dispatch, queryFulfilled }) {},
+		}),
 	}),
 });
 
-export const { useAddNewProductMutation, useGetProductsQuery } = productApi;
+export const { useAddNewProductMutation, useGetProductsQuery, useAddQuantityMutation } = productApi;

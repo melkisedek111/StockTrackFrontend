@@ -48,7 +48,7 @@ export default function DataTable({columns, rows, TableCells}) {
 
 											const value = row[column.id];
 											return (
-												TableCells ? TableCells?.[column.id](column, value) :
+												TableCells ? TableCells?.[column.id](column, value, row) :
 												<TableCell key={column.id} align={column.align}>
 													{column.format && typeof value === "number"
 														? column.format(value)

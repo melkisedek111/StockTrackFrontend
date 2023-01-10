@@ -13,10 +13,18 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import { globalActionLoad } from "../../redux/reducer/global.slice";
+import { removeUserState } from "../../redux/reducer/customer.slice";
+import { useDispatch } from "react-redux";
+import { purgePersistor } from "../../redux/store";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import { Avatar, Menu, MenuItem } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const drawerWidth = 240;
 
@@ -39,17 +47,79 @@ const adminLinks = [
 ];
 
 export default function AppNavbar() {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+	const handleOpenUserMenu = (event) => {
+		setAnchorElUser(event.currentTarget);
+	};
+
+	const handleCloseUserMenu = () => {
+		setAnchorElUser(null);
+	};
+
+	const handleSignOut = () => {
+		dispatch(
+			globalActionLoad({ Code: 1, Message: "Signing out", isLoading: true })
+		);
+
+		purgePersistor();
+
+		setTimeout(() => {
+			dispatch(removeUserState());
+			dispatch(globalActionLoad({ isLoading: false }));
+			navigate("/signin");
+		}, 2500);
+	};
+
 	return (
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
 			<AppBar
 				position="fixed"
-				sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+				sx={{
+					width: `calc(100% - ${drawerWidth}px)`,
+					ml: `${drawerWidth}px`,
+				}}
 			>
-				<Toolbar>
+				<Toolbar
+					style={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+					}}
+				>
 					<Typography variant="h6" noWrap component="div">
 						StockTrack
 					</Typography>
+					<Box sx={{ flexGrow: 0 }}>
+						<Tooltip title="Open settings">
+							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+							</IconButton>
+						</Tooltip>
+						<Menu
+							sx={{ mt: "45px" }}
+							id="menu-appbar"
+							anchorEl={anchorElUser}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							open={Boolean(anchorElUser)}
+							onClose={handleCloseUserMenu}
+						>
+							<MenuItem onClick={handleSignOut}>
+								<Typography textAlign="center">Logout</Typography>
+							</MenuItem>
+						</Menu>
+					</Box>
 				</Toolbar>
 			</AppBar>
 			<Drawer
@@ -68,7 +138,10 @@ export default function AppNavbar() {
 				<Divider />
 				<List>
 					{adminLinks.map((item, index) => (
-						<Link to={item.link} style={{ textDecoration: "none", color: "inherit !important" }}>
+						<Link
+							to={item.link}
+							style={{ textDecoration: "none", color: "black" }}
+						>
 							<ListItem key={item.label} disablePadding>
 								<ListItemButton>
 									<ListItemIcon>{item.icon}</ListItemIcon>
@@ -79,18 +152,18 @@ export default function AppNavbar() {
 					))}
 				</List>
 				<Divider />
-				{/* <List>
-					{["All mail", "Trash", "Spam"].map((text, index) => (
-						<ListItem key={text} disablePadding>
+				<List>
+					<Link to="/" style={{ textDecoration: "none", color: "black" }}>
+						<ListItem disablePadding>
 							<ListItemButton>
 								<ListItemIcon>
-									{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+									<DashboardIcon />
 								</ListItemIcon>
-								<ListItemText primary={text} />
+								<ListItemText primary={"Home"} />
 							</ListItemButton>
 						</ListItem>
-					))}
-				</List> */}
+					</Link>
+				</List>
 			</Drawer>
 			<Box
 				component="main"

@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/6adae547-f8e6-46be-a4df-bafc633b3185/AppServices/subscriptions/6adae547-f8e6-46be-a4df-bafc633b3185/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/stocktrackfe",
+    "appService.deploySubpath": "dist"
+}

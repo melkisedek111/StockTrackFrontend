@@ -15,6 +15,7 @@ const CustomModal = ({
 	handleSubmit,
 	children,
 	modalSize,
+	isFullWidth
 }) => {
 	return (
 		<div>
@@ -24,7 +25,7 @@ const CustomModal = ({
 				scroll={"body"}
 				aria-labelledby="scroll-dialog-title"
 				aria-describedby="scroll-dialog-description"
-				fullWidth
+				fullWidth={isFullWidth}
 				maxWidth={modalSize || "md"}
 			>
 				<DialogTitle

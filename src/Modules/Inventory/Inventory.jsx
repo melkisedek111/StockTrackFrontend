@@ -15,17 +15,19 @@ import DataTable from "../DataTable/DataTable.jsx";
 import ProductForm from "./Components/ProductForm.jsx";
 import AddIcon from "@mui/icons-material/Add";
 import { useTestAzureMutation } from "../../redux/api/order.api.js";
+import AddQuantityForm from "./Components/AddQuantityForm.jsx";
 
 const Inventory = () => {
 	const [products, setProducts] = useState([]);
+	const [selectedModalDetails, setSelectedModalDetails] = useState({});
 	const getProducts = useGetProductsQuery({
 		pollingInterval: 3000,
 		refetchOnMountOrArgChange: true,
 		skip: false,
 	});
-
 	const [openModal, setOpenModal] = useState(false);
 	const handleCloseModal = () => setOpenModal(false);
+
 	const columns = [
 		{ id: "name", label: "Name", minWidth: 170 },
 		{ id: "imageUrl", label: "Image", minWidth: 200 },
@@ -35,49 +37,60 @@ const Inventory = () => {
 		{ id: "category", label: "Category", minWidth: 100 },
 		{ id: "actions", label: "Actions", minWidth: 100, align: "center" },
 	];
+	
+	const handleSelectedModal = (props) => {
+		setSelectedModalDetails({
+			modalSize: props.modalSize,
+			headerName: props.headerName,
+			component: props.component,
+			isFullWidth: props.isFullWidth
+		});
+		setOpenModal(true);
+	}
+	
 
 	const TableCells = {
-		name: (column, value) => (
+		name: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				{column.format && typeof value === "number"
 					? column.format(value)
 					: value}
 			</TableCell>
 		),
-		imageUrl: (column, value) => (
+		imageUrl: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				<img src={value} style={{ height: 120, objectFit: "contain" }} />
 			</TableCell>
 		),
-		feature: (column, value) => (
+		feature: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				{column.format && typeof value === "number"
 					? column.format(value)
 					: value}
 			</TableCell>
 		),
-		price: (column, value) => (
+		price: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				{column.format && typeof value === "number"
 					? column.format(value)
 					: value}
 			</TableCell>
 		),
-		quantity: (column, value) => (
+		quantity: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				{column.format && typeof value === "number"
 					? column.format(value)
 					: value}
 			</TableCell>
 		),
-		category: (column, value) => (
+		category: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				{column.format && typeof value === "number"
 					? column.format(value)
 					: value}
 			</TableCell>
 		),
-		actions: (column, value) => (
+		actions: (column, value, data = {}) => (
 			<TableCell key={column.id} align={column.align}>
 				<Stack
 					direction="row"
@@ -85,13 +98,14 @@ const Inventory = () => {
 					alignItems="center"
 					justifyContent="center"
 				>
-					<IconButton color="primary" aria-label="delete">
+					<IconButton color="primary" aria-label="delete" onClick={() => handleSelectedModal({modalSize: "sm", isFullWidth: false, headerName: "Add Quantity", component: <AddQuantityForm product={data} />})}>
 						<AddIcon />
 					</IconButton>
 				</Stack>
 			</TableCell>
 		),
 	};
+
 
 	useEffect(() => {
 		if (getProducts?.data) {
@@ -110,7 +124,7 @@ const Inventory = () => {
 				}}
 			>
 				<Typography variant="h4">Inventory</Typography>
-				<Button variant="contained" onClick={() => setOpenModal(true)}>
+				<Button variant="contained" onClick={() => handleSelectedModal({modalSize: "sm", isFullWidth: true, headerName: "New Product", component: <ProductForm closeModal={handleCloseModal} />})}>
 					Add New Product
 				</Button>
 			</Box>
@@ -124,13 +138,14 @@ const Inventory = () => {
 				</Grid>
 			</Grid>
 			<CustomModal
-				modalSize="sm"
+				modalSize={selectedModalDetails.modalSize}
 				openModal={openModal}
 				handleCloseModal={handleCloseModal}
-				headerName="New Product"
+				headerName={selectedModalDetails.headerName}
 				handleSubmit={() => {}}
+				isFullWidth={selectedModalDetails.isFullWidth}
 			>
-				<ProductForm closeModal={handleCloseModal} />
+				{selectedModalDetails.component}
 			</CustomModal>
 		</Container>
 	);
