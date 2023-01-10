@@ -1,7 +1,13 @@
+let BACKEND_URL = `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/api/`;
+
+if(process.env.NODE_ENV === 'production'){
+	BACKEND_URL = `${process.env.BACKEND_PROD_HOST}/api/`;
+}
+
 export const APIConstant = {
 	BACKEND_HOST: process.env.BACKEND_HOST,
 	BACKEND_PORT: process.env.BACKEND_PORT,
-	BACKEND_URL: `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/api/`,
+	BACKEND_URL
 };
 
 export const AlertConstant = {
