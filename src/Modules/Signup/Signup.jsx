@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-	Box,
-	Button,
-	Container,
-	Divider,
-	Typography,
-} from "@mui/material";
+import { Box, Button, Container, Divider, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import {
 	handleValidation,
@@ -15,9 +9,8 @@ import { useAddNewCustomerMutation } from "../../redux/api/customer.api.js";
 import CustomTextField from "../Customs/CustomTextfield.jsx";
 import { globalActionLoad } from "../../redux/reducer/global.slice.js";
 import { useDispatch } from "react-redux";
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { getUserState } from "../../redux/reducer/customer.slice.js";
-
 
 const Signup = () => {
 	const [addNewCustomer, addNewCustomerResponse] = useAddNewCustomerMutation();
@@ -32,6 +25,11 @@ const Signup = () => {
 			value: "",
 			type: "username",
 			label: "Username",
+		},
+		email: {
+			value: "",
+			type: "email",
+			label: "Email",
 		},
 		password: {
 			value: "",
@@ -54,11 +52,12 @@ const Signup = () => {
 		setErrors(hasErrors);
 
 		if (Object.keys(hasErrors).length === 0) {
-			const { fullName, username, password } = formFields;
+			const { fullName, username, password, email } = formFields;
 			addNewCustomer({
 				fullName: fullName.value,
 				username: username.value,
 				password: password.value,
+				email: email.value,
 			});
 		}
 	};
@@ -68,25 +67,35 @@ const Signup = () => {
 	};
 
 	useEffect(() => {
-		if(addNewCustomerResponse?.isSuccess){
-			let { fullName, username, password, confirmPassword } = formFields;
-			fullName.value = "";
-			username.value = "";
-			password.value = "";
-			confirmPassword.value = "";
-			setFormFields({fullName, username, password, confirmPassword });
-			setTimeout(() => {
-				dispatch(globalActionLoad({Message: "You will be redirected in a moment.", Code: 1}));
-				const { data: { Data } } = addNewCustomerResponse;
-				console.log(Data)
-				dispatch(getUserState(Data))
+		if (addNewCustomerResponse?.isSuccess) {
+			if (addNewCustomerResponse.data.Data) {
+				let { fullName, username, password, confirmPassword, email } =
+					formFields;
+				fullName.value = "";
+				username.value = "";
+				email.value = "";
+				password.value = "";
+				confirmPassword.value = "";
+				setFormFields({ fullName, username, password, confirmPassword, email });
 				setTimeout(() => {
-					navigate("/");
-				}, 1500)
-			}, [2100])
-		}
-	}, [addNewCustomerResponse])
+					dispatch(
+						globalActionLoad({
+							Message: "You will be redirected in a moment.",
+							Code: 1,
+						})
+					);
+					const {
+						data: { Data },
+					} = addNewCustomerResponse;
 
+					dispatch(getUserState(Data));
+					setTimeout(() => {
+						navigate("/");
+					}, 1500);
+				}, [2100]);
+			}
+		}
+	}, [addNewCustomerResponse]);
 
 	return (
 		<Container maxWidth="sm" sx={{ marginTop: "20px" }}>
@@ -127,6 +136,17 @@ const Signup = () => {
 					onChange={handleTextFieldChange}
 					error={errors?.username ? true : false}
 					helperText={errors?.username || ""}
+					type="text"
+				/>
+				<CustomTextField
+					id="email"
+					label="Email"
+					variant="outlined"
+					fullWidth
+					value={formFields.email.value}
+					onChange={handleTextFieldChange}
+					error={errors?.email ? true : false}
+					helperText={errors?.email || ""}
 					type="text"
 				/>
 				<CustomTextField

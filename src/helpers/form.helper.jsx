@@ -25,6 +25,9 @@ export const handleValidation = ({ fields }) => {
 	/* digit validation */
 	const digitValidation = /^[0-9]+$/;
 
+	/* email validation */
+	const emailValidation = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
 	const errors = {};
 
 	/* this loop is used to iterate each of the default fields to check for errors and validations */
@@ -44,6 +47,11 @@ export const handleValidation = ({ fields }) => {
 			/* check if the field is letter only, space and dot */
 			if (!trimmedValue.match(digitValidation)) {
 				errors[field] = `${label} must be a digit.`;
+			}
+		} else if (type === "email") {
+			/* check if the field is letter only, space and dot */
+			if (!trimmedValue.match(emailValidation)) {
+				errors[field] = `${label} must be a a valid email.`;
 			}
 		} else if (type === "decimal") {
 			/* check if the field is letter only, space and dot */
