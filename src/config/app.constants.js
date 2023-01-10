@@ -1,5 +1,5 @@
 let BACKEND_URL = `${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/api/`;
-console.log(process.env.NODE_ENV, 222020202)
+console.log(process.env.BACKEND_PROD_HOST, 222020202)
 if(process.env.NODE_ENV === 'production'){
 	BACKEND_URL = `${process.env.BACKEND_PROD_HOST}/api/`;
 }
